@@ -4,6 +4,8 @@ Rails.application.routes.draw do
     sessions:      "users/sessions",
   }
 
+  mount MissionControl::Jobs::Engine, at: "/jobs"
+
   get 'inertia-example', to: 'inertia_example#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -17,6 +19,4 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
-
-  mount MissionControl::Jobs::Engine, at: "/jobs"
 end

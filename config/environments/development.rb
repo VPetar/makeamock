@@ -86,4 +86,6 @@ Rails.application.configure do
   # Automatically update js-routes file
   # when routes.rb is changed
   config.middleware.use(JsRoutes::Middleware)
+
+  config.mission_control.jobs.base_controller_class = "QueueDashboardController"
 end
