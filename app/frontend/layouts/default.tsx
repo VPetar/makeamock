@@ -14,7 +14,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function DefaultLayout({ children }) {
+export default function DefaultLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <SidebarProvider>
       <AppSidebar />

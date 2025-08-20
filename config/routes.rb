@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
-  mount MissionControl::Jobs::Engine, at: "/jobs"
+  devise_for :users, controllers: {
+    registrations: "users/registrations",
+    sessions:      "users/sessions",
+  }
 
   get 'inertia-example', to: 'inertia_example#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -14,5 +16,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "home#index"
+
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 end

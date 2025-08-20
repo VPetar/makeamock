@@ -1,0 +1,12 @@
+{
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "experimentalOperatorPosition": "end",
+  "experimentalTernaries": true,
+  "objectWrap": "collapse",
+  "printWidth": 80,
+  "semi": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false
+}

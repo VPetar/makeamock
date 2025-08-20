@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+class Users::SessionsController < Devise::SessionsController
+  inertia_config(
+    default_render:          true,
+    component_path_resolver: ->(path:, action:) { "#{path}/#{action}" }
+  )
+
+  # before_action :configure_sign_in_params, only: [:create]
+
+  # GET /resource/sign_in
+  def new
+    # super
+  end
+
+  # POST /resource/sign_in
+  def create
+    self.resource = warden.authenticate!(auth_options)
+
+    if resource.confirmed?
+      set_flash_message!(:notice, :signed_in)
+      sign_in(resource_name, resource)
+      yield resource if block_given?
+      respond_with resource, location: after_sign_in_path_for(resource)
+    else
+      set_flash_message(:alert, :unconfirmed_email) if is_navigational_format?
+      expire_data_after_sign_in!
+      redirect_to new_user_session_path
+    end
+  end
+
+  # DELETE /resource/sign_out
+  # def destroy
+  #   super
+  # end
+
+  protected
+
+  def user_params
+    params.require(:user).permit(:email, :password)
+  end
+
+  # If you have extra params to permit, append them to the sanitizer.
+  # def configure_sign_in_params
+  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
+  # end
+end
