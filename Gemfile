@@ -62,3 +62,6 @@ gem "vite_rails", "~> 3.0"
 
 gem "devise", "~> 4.9"
 gem "js-routes"
+
+gem "mission_control-jobs", "~> 1.1"
+gem "propshaft"
