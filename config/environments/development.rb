@@ -34,6 +34,19 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:         "localhost",
+    port:            1025,
+    domain:          "localhost",
+    user_name:       "qwe@qwe.qwe",
+    password:        "qwe@qwe.qwe",
+    authentication:  "plain",
+    enable_starttls: false,
+    open_timeout:    5,
+    read_timeout:    5
+  }
+
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
