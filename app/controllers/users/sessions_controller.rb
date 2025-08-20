@@ -15,7 +15,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    self.resource = warden.authenticate!(auth_options)
+    self.resource = User.find_for_database_authentication(email: user_params[:email])
 
     if resource.confirmed?
       set_flash_message!(:notice, :signed_in)
@@ -23,7 +23,9 @@ class Users::SessionsController < Devise::SessionsController
       yield resource if block_given?
       respond_with resource, location: after_sign_in_path_for(resource)
     else
-      set_flash_message(:alert, :unconfirmed_email) if is_navigational_format?
+      set_flash_message(:alert, :unconfirmed, {
+        scope: [:devise, :failure]
+      }) if is_navigational_format?
       expire_data_after_sign_in!
       redirect_to new_user_session_path
     end

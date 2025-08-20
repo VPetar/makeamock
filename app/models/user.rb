@@ -36,4 +36,14 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :trackable
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    email = conditions.delete(:email)
+    where(conditions).where(["lower(email) = :value", { value: email.downcase }]).first.tap do |user|
+      if user && !user.confirmed?
+        user = nil
+      end
+    end
+  end
 end
