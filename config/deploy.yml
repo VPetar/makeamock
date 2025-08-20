@@ -2,7 +2,7 @@
 service: makeamock
 
 # Name of the container image.
-image: vpetar/makeamock
+image: freeze.988/makeamock
 
 # Deploy to these servers.
 servers:
