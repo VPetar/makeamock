@@ -88,4 +88,7 @@ Rails.application.configure do
   config.middleware.use(JsRoutes::Middleware)
 
   config.mission_control.jobs.base_controller_class = "QueueDashboardController"
+
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 end
