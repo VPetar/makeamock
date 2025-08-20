@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby "3.4.2"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
 # Use sqlite3 as the database for Active Record
@@ -46,6 +48,7 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "annotaterb"
 end
 
 group :test do
@@ -56,3 +59,6 @@ end
 
 gem "inertia_rails", "~> 3.6"
 gem "vite_rails", "~> 3.0"
+
+gem "devise", "~> 4.9"
+gem "js-routes"
