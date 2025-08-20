@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
   get 'inertia-example', to: 'inertia_example#index'
