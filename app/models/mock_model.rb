@@ -24,6 +24,22 @@ class MockModel < ApplicationRecord
 
   before_validation :initialize_jsonb
 
+  def generate_from_data(data, id = 1)
+    return {} unless fields.is_a?(Hash)
+
+    generated_data = {
+      id: id,
+    }
+
+    fields.each do |field_name, field_type|
+      if data[field_name.to_sym]
+        generated_data[field_name.to_sym] = data[field_name.to_sym]
+      end
+    end
+
+    generated_data
+  end
+
   private
 
   def initialize_jsonb

@@ -19,4 +19,13 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  namespace :api do
+    get "*endpoint", to: "dynamic#index", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_index
+    get "*endpoint/:id", to: "dynamic#show", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_show
+    post "*endpoint", to: "dynamic#create", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_create
+    put "*endpoint/:id", to: "dynamic#update", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_update
+    patch "*endpoint/:id", to: "dynamic#update", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_patch
+    delete "*endpoint/:id", to: "dynamic#destroy", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_destroy
+  end
 end

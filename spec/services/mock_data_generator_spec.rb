@@ -145,7 +145,6 @@ RSpec.describe MockDataGenerator do
 
     it 'generates boolean values for boolean fields' do
       record = generator_with_fields.generate_single_record(id: 1)
-      puts record.inspect
       expect([ true, false ]).to include(record[:active])
     end
   end
