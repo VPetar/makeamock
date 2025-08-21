@@ -3,6 +3,7 @@ import { createElement, ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import Default from "@/layouts/default.tsx";
 import PublicLayout from "@/layouts/public.tsx";
+import AuthorizationLayout from "@/layouts/authorization.tsx";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -42,8 +43,15 @@ createInertiaApp({
       }
 
       if (["users", "admins"].some((prefix) => name.startsWith(prefix))) {
-        (page.default as any).layout = null;
+        (page.default as any).layout = (page: any) => (
+          <AuthorizationLayout children={page} />
+        );
       }
+    }
+
+    // exclude if layouts are special pages
+    if (["404", "500"].includes(name)) {
+      (page.default as any).layout = null;
     }
 
     // To use a default layout, import the Layout component

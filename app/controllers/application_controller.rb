@@ -7,7 +7,14 @@ class ApplicationController < ActionController::Base
   use_inertia_instance_props
 
   inertia_config(
-    default_render: true,
+    default_render:          true,
     component_path_resolver: ->(path:, action:) { "#{path}/#{action}" }
   )
+
+  inertia_share do
+    {
+      has_user: -> { current_user.present? },
+      user: -> { current_user },
+    }
+  end
 end

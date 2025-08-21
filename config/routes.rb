@@ -32,4 +32,8 @@ Rails.application.routes.draw do
   namespace :dashboard do
     resources :home
   end
+
+  get "*unmatched", to: "errors#not_found", constraints: lambda { |req|
+    req.path.exclude? "rails/active_storage"
+  }
 end

@@ -17,6 +17,16 @@ class Users::SessionsController < Devise::SessionsController
   def create
     self.resource = User.find_for_database_authentication(email: user_params[:email])
 
+    unless resource.present?
+      set_flash_message(:alert, :not_found_in_database, {
+        scope: [ :devise, :failure ],
+        authentication_keys: User.human_attribute_name(:email).downcase
+      }) if is_navigational_format?
+      expire_data_after_sign_in!
+      redirect_to new_user_session_path
+      return
+    end
+
     if resource.confirmed?
       set_flash_message!(:notice, :signed_in)
       sign_in(resource_name, resource)
