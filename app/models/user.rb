@@ -37,6 +37,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :trackable
 
+  has_many :mock_models, dependent: :destroy
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     email = conditions.delete(:email)
