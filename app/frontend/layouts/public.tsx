@@ -1,6 +1,7 @@
 import { usePage } from "@inertiajs/react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import { AlertCircleIcon, CheckCircle2Icon, PopcornIcon } from "lucide-react";
+import { new_user_session_path } from "@/routes";
 
 export default function PublicLayout({
   children,
@@ -31,6 +32,9 @@ export default function PublicLayout({
 
   return (
     <>
+      <div>
+        <a href={new_user_session_path()}>Login</a>
+      </div>
       <div className="flex justify-center items-center">
         <div className="grid w-full max-w-xl items-start gap-4">
           {sharedProps.has_flash ?

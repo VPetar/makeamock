@@ -8,21 +8,18 @@ import { useForm } from "@inertiajs/react";
 import { new_user_session_path } from "@/routes";
 
 export function LoginForm({
-                            className,
-                            ...props
-                          }: React.ComponentProps<"div">) {
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   const { post, data, setData, processing } = useForm({
-    user: {
-      email: "",
-      password: "",
-    }
+    user: { email: "", password: "" },
   });
 
   function loginUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     e.stopPropagation();
 
-    post(new_user_session_path())
+    post(new_user_session_path());
   }
 
   return (
@@ -55,10 +52,9 @@ export function LoginForm({
                 type="email"
                 placeholder="m@example.com"
                 required
-                onChange={(e) => setData("user", {
-                  ...data.user,
-                  email: e.target.value,
-                })}
+                onChange={(e) =>
+                  setData("user", { ...data.user, email: e.target.value })
+                }
               />
             </div>
             <div className="grid gap-3">
@@ -68,10 +64,9 @@ export function LoginForm({
                 type="password"
                 placeholder="********"
                 required
-                onChange={(e) => setData("user", {
-                  ...data.user,
-                  password: e.target.value,
-                })}
+                onChange={(e) =>
+                  setData("user", { ...data.user, password: e.target.value })
+                }
               />
             </div>
             <Button className="w-full" disabled={processing}>
