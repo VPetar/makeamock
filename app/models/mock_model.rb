@@ -28,7 +28,7 @@ class MockModel < ApplicationRecord
     return {} unless fields.is_a?(Hash)
 
     generated_data = {
-      id: id,
+      id: id
     }
 
     fields.each do |field_name, field_type|

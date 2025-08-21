@@ -28,4 +28,8 @@ Rails.application.routes.draw do
     patch "*endpoint/:id", to: "dynamic#update", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_patch
     delete "*endpoint/:id", to: "dynamic#destroy", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_destroy
   end
+
+  namespace :dashboard do
+    resources :home
+  end
 end

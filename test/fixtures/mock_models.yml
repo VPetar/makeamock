@@ -23,11 +23,11 @@
 one:
   user: one
   name: MyString
-  fields: 
-  associations: 
+  fields:
+  associations:
 
 two:
   user: two
   name: MyString
-  fields: 
-  associations: 
+  fields:
+  associations:

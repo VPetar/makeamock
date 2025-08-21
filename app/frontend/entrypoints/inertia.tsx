@@ -30,11 +30,20 @@ createInertiaApp({
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
 
+    (page.default as any).layout = (page: any) => (
+      <PublicLayout children={page} />
+    );
+
     if (page && page.default) {
-      (page.default as any).layout =
-        name.startsWith("dashboard/") ?
-          (page: any) => <Default children={page} />
-        : (page: any) => <PublicLayout children={page} />;
+      if (name.startsWith("dashboard/")) {
+        (page.default as any).layout = (page: any) => (
+          <Default children={page} />
+        );
+      }
+
+      if (["users", "admins"].some((prefix) => name.startsWith(prefix))) {
+        (page.default as any).layout = null;
+      }
     }
 
     // To use a default layout, import the Layout component

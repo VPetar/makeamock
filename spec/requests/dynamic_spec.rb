@@ -7,7 +7,7 @@ RSpec.describe Api::DynamicController, type: :request do
     before do
       create(:mock_model, name: "Users", user: user, fields: {
         "name"  => { type: "string", required: true },
-        "email" => { type: "string", required: true },
+        "email" => { type: "string", required: true }
       })
     end
 
@@ -25,7 +25,7 @@ RSpec.describe Api::DynamicController, type: :request do
     before do
       create(:mock_model, name: "Users", user: user, fields: {
         "name"  => { type: "string", required: true },
-        "email" => { type: "string", required: true },
+        "email" => { type: "string", required: true }
       })
     end
 
@@ -49,7 +49,7 @@ RSpec.describe Api::DynamicController, type: :request do
     before do
       create(:mock_model, name: "Users", user: user, fields: {
         "name"  => { type: "string", required: true },
-        "email" => { type: "string", required: true },
+        "email" => { type: "string", required: true }
       })
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Api::DynamicController, type: :request do
     before do
       create(:mock_model, name: "Users", user: user, fields: {
         "name"  => { type: "string", required: true },
-        "email" => { type: "string", required: true },
+        "email" => { type: "string", required: true }
       })
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Api::DynamicController, type: :request do
     before do
       create(:mock_model, name: "Users", user: user, fields: {
         "name"  => { type: "string", required: true },
-        "email" => { type: "string", required: true },
+        "email" => { type: "string", required: true }
       })
     end
 
