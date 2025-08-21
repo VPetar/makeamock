@@ -5,7 +5,7 @@ module InertiaFlash
     inertia_share do
       {
         has_flash: !flash.empty?,
-        flash: flash.to_hash,
+        flash: flash.to_hash
       }
     end
   end

@@ -15,7 +15,7 @@ if Rails.env.development?
       bio:    { type: 'text', required: true },
       age:    { type: 'integer', required: true },
       email:  { type: 'email', required: true },
-      active: { type: 'boolean', required: true },
+      active: { type: 'boolean', required: true }
     },
     associations: []
   ).find_or_create_by!(

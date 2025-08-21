@@ -42,7 +42,7 @@ class User < ApplicationRecord
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     email = conditions.delete(:email)
-    where(conditions).where(["lower(email) = :value", { value: email.downcase }]).first.tap do |user|
+    where(conditions).where([ "lower(email) = :value", { value: email.downcase } ]).first.tap do |user|
       if user && !user.confirmed?
         user = nil
       end

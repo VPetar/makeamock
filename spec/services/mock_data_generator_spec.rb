@@ -80,7 +80,7 @@ RSpec.describe MockDataGenerator do
       end
 
       it 'includes associations when specified' do
-        records = generator_with_associations.generate_records(count: 1, includes: ['relatedmodels'])
+        records = generator_with_associations.generate_records(count: 1, includes: [ 'relatedmodels' ])
         expect(records.first).to have_key(:relatedmodels)
       end
 
@@ -114,7 +114,7 @@ RSpec.describe MockDataGenerator do
                bio:    { type: 'text', required: true },
                age:    { type: 'integer', required: true },
                email:  { type: 'email', required: true },
-               active: { type: 'boolean', required: true },
+               active: { type: 'boolean', required: true }
              },
              associations: [])
     end
@@ -146,7 +146,7 @@ RSpec.describe MockDataGenerator do
     it 'generates boolean values for boolean fields' do
       record = generator_with_fields.generate_single_record(id: 1)
       puts record.inspect
-      expect([true, false]).to include(record[:active])
+      expect([ true, false ]).to include(record[:active])
     end
   end
 
@@ -170,14 +170,14 @@ RSpec.describe MockDataGenerator do
       before { post_model }
 
       it 'generates has_many associations when included' do
-        record = generator_has_many.generate_single_record(id: 1, includes: ['posts'])
+        record = generator_has_many.generate_single_record(id: 1, includes: [ 'posts' ])
         expect(record).to have_key(:posts)
         expect(record[:posts]).to be_an(Array)
         expect(record[:posts].length).to eq(3)
       end
 
       it 'sets foreign key on related records' do
-        record = generator_has_many.generate_single_record(id: 5, includes: ['posts'])
+        record = generator_has_many.generate_single_record(id: 5, includes: [ 'posts' ])
         record[:posts].each do |post|
           expect(post['user_id']).to eq(5)
         end
@@ -205,7 +205,7 @@ RSpec.describe MockDataGenerator do
       end
 
       it 'includes related record when specified' do
-        generated = generator_belongs_to.generate_single_record(id: 1, includes: ['user'])
+        generated = generator_belongs_to.generate_single_record(id: 1, includes: [ 'user' ])
         expect(generated).to have_key(:user)
         expect(generated[:user]).to be_a(Hash)
         expect(generated[:user][:id]).to eq(generated[:user_id])
@@ -228,13 +228,13 @@ RSpec.describe MockDataGenerator do
       before { profile_model }
 
       it 'generates foreign key for has_one associations' do
-        generated = generator_has_one.generate_single_record(id: 1, includes: ['profile'])
+        generated = generator_has_one.generate_single_record(id: 1, includes: [ 'profile' ])
 
         expect(generated).to have_key(:profile_id)
       end
 
       it 'includes related record when specified' do
-        generated = generator_has_one.generate_single_record(id: 1, includes: ['profile'])
+        generated = generator_has_one.generate_single_record(id: 1, includes: [ 'profile' ])
         expect(generated).to have_key(:profile)
         expect(generated[:profile]).to be_a(Hash)
         expect(generated[:profile][:id]).to eq(generated[:profile_id])
@@ -255,7 +255,7 @@ RSpec.describe MockDataGenerator do
 
       it 'handles missing related models gracefully' do
         expect {
-          record = generator_missing.generate_single_record(id: 1, includes: ['nonexistentmodels'])
+          record = generator_missing.generate_single_record(id: 1, includes: [ 'nonexistentmodels' ])
           expect(record).not_to have_key(:nonexistentmodels)
         }.not_to raise_error
       end
@@ -268,12 +268,12 @@ RSpec.describe MockDataGenerator do
       generator = described_class.new(mock_model, user)
       record    = generator.generate_single_record(id: 1)
       expect(record[:id]).to eq(1)
-      expect(record.keys).to eq([:id])
+      expect(record.keys).to eq([ :id ])
     end
 
     it 'handles empty associations array' do
       mock_model.update!(associations: [])
-      record = generator.generate_single_record(id: 1, includes: ['anything'])
+      record = generator.generate_single_record(id: 1, includes: [ 'anything' ])
       expect(record[:id]).to eq(1)
     end
 

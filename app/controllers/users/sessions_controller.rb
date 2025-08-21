@@ -24,7 +24,7 @@ class Users::SessionsController < Devise::SessionsController
       respond_with resource, location: after_sign_in_path_for(resource)
     else
       set_flash_message(:alert, :unconfirmed, {
-        scope: [:devise, :failure]
+        scope: [ :devise, :failure ]
       }) if is_navigational_format?
       expire_data_after_sign_in!
       redirect_to new_user_session_path
