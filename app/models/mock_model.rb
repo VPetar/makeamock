@@ -21,15 +21,13 @@
 class MockModel < ApplicationRecord
   belongs_to :user
   validates :name, presence: true, uniqueness: { scope: :user_id }
-  validates :fields, presence: true
-  validates :associations, presence: true
 
   before_validation :initialize_jsonb
 
   private
 
   def initialize_jsonb
-    self.fields ||= {}
+    self.fields ||= []
     self.associations ||= []
   end
 end

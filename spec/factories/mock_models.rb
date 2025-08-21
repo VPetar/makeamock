@@ -11,12 +11,7 @@ FactoryBot.define do
         Faker::Lorem.word => { type: "datetime", required: true }
       }
     end
-    associations do
-      [
-        { name: Faker::Lorem.word, type: "belongs_to", model: Faker::Lorem.word.capitalize },
-        { name: Faker::Lorem.word.pluralize, type: "has_many", model: Faker::Lorem.word.capitalize }
-      ]
-    end
+    associations { [] }
 
     trait :simple do
       fields do

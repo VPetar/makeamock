@@ -11,8 +11,6 @@ RSpec.describe MockModel, type: :model do
 
       expect(model.errors).to include(:name)
       expect(model.errors).to include(:user)
-      expect(model.errors).to include(:associations)
-      expect(model.errors).to include(:fields)
     end
   end
 
