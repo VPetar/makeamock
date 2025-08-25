@@ -38,6 +38,9 @@ class User < ApplicationRecord
          :confirmable, :lockable, :trackable
 
   has_many :mock_models, dependent: :destroy
+  has_many :team_memberships, dependent: :destroy
+  has_many :teams, through: :team_memberships
+  has_many :sent_invitations, class_name: "Invitation", foreign_key: "invited_by_id", dependent: :destroy
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -46,6 +49,44 @@ class User < ApplicationRecord
       if user && !user.confirmed?
         user = nil
       end
+    end
+  end
+
+  def has_team?
+    teams.any?
+  end
+
+  def admin_of?(team)
+    team_memberships.where(team: team, role: "admin").exists?
+  end
+
+  def member_of?(team)
+    team_memberships.where(team: team).exists?
+  end
+
+  def admin_teams
+    teams.joins(:team_memberships).where(team_memberships: { user: self, role: "admin" })
+  end
+
+  def member_teams
+    teams.joins(:team_memberships).where(team_memberships: { user: self, role: "member" })
+  end
+
+  private
+
+  def after_confirmation
+    process_pending_invitations
+  end
+
+  def process_pending_invitations
+    # Find all pending invitations for this user's email
+    pending_invitations = Invitation.where(
+      email: email,
+      status: [ "pending", "pending_user_creation" ]
+    ).valid
+
+    pending_invitations.each do |invitation|
+      invitation.accept!(self)
     end
   end
 end

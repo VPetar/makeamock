@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::DynamicController, type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_team) }
 
   describe "GET /api/users?count=10" do
     before do

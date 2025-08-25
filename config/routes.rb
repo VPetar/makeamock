@@ -20,6 +20,28 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
+  # Onboarding routes
+  resources :onboarding, only: [ :index ] do
+    collection do
+      post :create_team
+    end
+  end
+
+  # Invitation routes (public access via token)
+  resources :invitations, param: :token, only: [ :show ] do
+    member do
+      patch :accept
+      patch :decline
+    end
+  end
+
+  # Team routes
+  resources :teams, param: :guid, only: [] do
+    namespace :teams do
+      resources :invitations, only: [ :index, :create, :destroy ]
+    end
+  end
+
   namespace :api do
     get "*endpoint", to: "dynamic#index", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_index
     get "*endpoint/:id", to: "dynamic#show", constraints: { endpoint: %r{[^/]+(/[^/]+)*} }, as: :dynamic_show

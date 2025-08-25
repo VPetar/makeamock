@@ -23,4 +23,7 @@ if Rails.env.development?
     name: "Test Mock Model"
   )
 
+  team = Team.find_or_create_by!(name: "Test Team")
+  TeamMembership.find_or_create_by!(team: team, user: user, role: "admin")
+
 end

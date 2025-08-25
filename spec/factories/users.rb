@@ -43,5 +43,12 @@ FactoryBot.define do
       current_sign_in_ip { nil }
       last_sign_in_ip { nil }
     end
+
+    trait :with_team do
+      after(:create) do |user|
+        team = create(:team)
+        create(:team_membership, team: team, user: user, role: "admin")
+      end
+    end
   end
 end

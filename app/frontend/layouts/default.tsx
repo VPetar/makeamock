@@ -27,6 +27,8 @@ export default function DefaultLayout({
     flash: Record<string, string>;
   }>().props;
 
+  console.log('sharedProps', sharedProps);
+
   const flashType =
     sharedProps.has_flash ?
       Object.keys(sharedProps.flash).filter((key) =>

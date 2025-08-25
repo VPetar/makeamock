@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_21_065139) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_083038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "email", null: false
+    t.bigint "team_id", null: false
+    t.bigint "invited_by_id", null: false
+    t.string "token", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email", "team_id"], name: "index_invitations_on_email_and_team_id", unique: true
+    t.index ["invited_by_id"], name: "index_invitations_on_invited_by_id"
+    t.index ["team_id"], name: "index_invitations_on_team_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
 
   create_table "mock_models", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -22,6 +37,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_065139) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_mock_models_on_user_id"
+  end
+
+  create_table "team_memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_memberships_on_team_id"
+    t.index ["user_id", "team_id"], name: "index_team_memberships_on_user_id_and_team_id", unique: true
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "guid", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["guid"], name: "index_teams_on_guid", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -50,5 +84,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_065139) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "invitations", "teams"
+  add_foreign_key "invitations", "users", column: "invited_by_id"
   add_foreign_key "mock_models", "users"
+  add_foreign_key "team_memberships", "teams"
+  add_foreign_key "team_memberships", "users"
 end

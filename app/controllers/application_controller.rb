@@ -15,6 +15,14 @@ class ApplicationController < ActionController::Base
     {
       has_user: -> { current_user.present? },
       user: -> { current_user },
+      user_teams: -> { current_user&.teams || [] },
+      has_team: -> { current_user&.has_team? || false }
     }
+  end
+
+  protected
+
+  def current_ability
+    @current_ability ||= Ability.new(current_user)
   end
 end
