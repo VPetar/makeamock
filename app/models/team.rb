@@ -22,6 +22,10 @@ class Team < ApplicationRecord
 
   before_validation :generate_guid, on: :create
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "guid", "id", "id_value", "name", "updated_at"]
+  end
+
   def admins
     users.joins(:team_memberships).where(team_memberships: { team: self, role: "admin" })
   end

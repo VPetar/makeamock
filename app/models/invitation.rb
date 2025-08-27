@@ -36,7 +36,6 @@ class Invitation < ApplicationRecord
 
   before_validation :generate_token, on: :create
   before_validation :set_expiration, on: :create
-  after_create :send_invitation_email
 
   scope :pending, -> { where(status: "pending") }
   scope :accepted, -> { where(status: "accepted") }
@@ -44,6 +43,14 @@ class Invitation < ApplicationRecord
   scope :pending_user_creation, -> { where(status: "pending_user_creation") }
   scope :expired, -> { where("expires_at < ?", Time.current) }
   scope :valid, -> { where("expires_at > ?", Time.current) }
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "email", "expires_at", "id", "status", "token", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["invited_by", "team"]
+  end
 
   def expired?
     expires_at < Time.current
@@ -97,14 +104,8 @@ class Invitation < ApplicationRecord
     update(status: "pending_user_creation")
   end
 
-  # Class method to create and send invitation
-  def self.create_and_send!(email:, team:, invited_by:)
-    invitation = create!(
-      email: email,
-      team: team,
-      invited_by: invited_by
-    )
-    invitation
+  def send_invitation
+    send_invitation_email
   end
 
   private

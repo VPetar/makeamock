@@ -71,3 +71,8 @@ gem "mission_control-jobs", "~> 1.1"
 gem "propshaft"
 
 gem "faker"
+
+gem "activeadmin", "4.0.0.beta16"
+gem "activeadmin_assets"
+gem "draper"
+gem "pundit"

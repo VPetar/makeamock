@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: teams
+#
+#  id         :bigint           not null, primary key
+#  guid       :string           not null
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_teams_on_guid  (guid) UNIQUE
+#
 FactoryBot.define do
   factory :team do
     name { Faker::Company.name }

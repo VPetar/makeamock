@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: mock_models
+#
+#  id           :bigint           not null, primary key
+#  associations :jsonb            not null
+#  fields       :jsonb            not null
+#  name         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  user_id      :bigint           not null
+#
+# Indexes
+#
+#  index_mock_models_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 FactoryBot.define do
   factory :mock_model do
     association :user
