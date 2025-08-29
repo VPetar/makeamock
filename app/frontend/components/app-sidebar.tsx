@@ -23,6 +23,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { dashboard_models_path } from "@/routes";
 
 // This is sample data.
 const data = {
@@ -53,7 +54,7 @@ const data = {
       url: "#",
       icon: Bot,
       items: [
-        { title: "Design", url: "/dashboard/models" },
+        { title: "Design", url: dashboard_models_path() },
         { title: "Genesis", url: "#" },
         { title: "Explorer", url: "#" },
         { title: "Quantum", url: "#" },
@@ -93,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

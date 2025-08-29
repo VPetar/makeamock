@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Check, ChevronsUpDown, Plus, Users } from "lucide-react";
 
 import {
