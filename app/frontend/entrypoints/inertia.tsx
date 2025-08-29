@@ -31,6 +31,9 @@ createInertiaApp({
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
 
+    console.debug('page to load: ', `/pages/${name}.tsx`);
+    console.debug('page found: ', page);
+
     (page.default as any).layout = (page: any) => (
       <PublicLayout children={page} />
     );

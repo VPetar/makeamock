@@ -76,6 +76,10 @@ class User < ApplicationRecord
     teams.joins(:team_memberships).where(team_memberships: { user: self, role: "member" })
   end
 
+  def active_team
+    teams.joins(:team_memberships).where(team_memberships: { user: self, active: true }).first
+  end
+
   private
 
   def after_confirmation
