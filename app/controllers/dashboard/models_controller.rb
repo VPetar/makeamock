@@ -14,7 +14,16 @@ class Dashboard::ModelsController < AuthorizedController
           mock_model = current_user.active_team.mock_models.find_by(id: node[:data][:mock_model_id])
 
           if mock_model.nil? && node[:data][:name].present?
-            # we will create a new one
+            fields = {}
+            if node[:data][:fields].is_a?(Array)
+              node[:data][:fields].each do |field|
+                fields[field[:name]] = {
+                  type: field[:type],
+                  required: field[:required] || false
+                }
+              end
+            end
+            mock_model = current_user.active_team.mock_models.create!(name: node[:data][:name], fields: fields)
           end
 
           if mock_model
@@ -27,6 +36,7 @@ class Dashboard::ModelsController < AuthorizedController
                 }
               end
             end
+            # ensure no double entries in fields
             mock_model.update!(name: node[:data][:name], fields: fields)
           end
         end

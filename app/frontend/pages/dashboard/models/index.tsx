@@ -8,7 +8,7 @@ import {
   useEdgesState,
   addEdge,
   Connection,
-  Node,
+  Node as ReactFlowNode,
   NodeTypes,
   BackgroundVariant,
 } from "@xyflow/react";
@@ -26,10 +26,10 @@ interface DashboardModelsIndexProps {
 
 export interface Schema {
   edges: any[]
-  nodes: Node[]
+  nodes: SchemaNode[]
 }
 
-export interface Node {
+export interface SchemaNode {
   id: string
   data: Data
   type: string
@@ -111,16 +111,14 @@ interface ContextMenuState {
 export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
   const { models, schema } = props;
 
-  console.log('schema', schema);
-
   const {
     post: submitForm,
     processing,
     setData,
     data: modelFormData,
-  } = useForm({ model: { nodes: [], edges: [] } });
+  } = useForm<{model: {nodes: any[], edges: any[]}}>({ model: { nodes: [], edges: [] } });
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<ReactFlowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
     visible: false,
@@ -149,22 +147,27 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
   }), [updateModelData]);
 
   // Convert Rails models to ERD format
-  const convertModelToERD = useCallback((model: Model, index: number): Node => {
+  const convertModelToERD = useCallback((model: Model, index: number): ReactFlowNode => {
     // Convert Rails fields object to ERD fields array
     const erdFields: ERDField[] = [];
 
-    // Add id field first (standard for all models)
-    erdFields.push({
-      id: `mock-model-${model.id}-id`,
-      name: "id",
-      type: "integer",
-      required: true,
-    });
+    // Check if id field already exists in model.fields
+    const hasIdField = Object.keys(model.fields).includes('id');
+
+    // Add id field first only if it doesn't already exist
+    if (!hasIdField) {
+      erdFields.push({
+        id: `mock-model-${model.id}-id`,
+        name: "id",
+        type: "integer",
+        required: true,
+      });
+    }
 
     // Convert existing fields
     Object.entries(model.fields).forEach(([fieldName, field]) => {
       // Map Rails field types to ERD field types
-      let erdType: ERDField["type"] = "string";
+      let erdType: ERDField["type"];
 
       switch (field.type.toLowerCase()) {
         case "text":
@@ -200,11 +203,23 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
       fields: erdFields,
     };
 
-    // Position models in a grid layout
-    const GRID_SPACING = 350;
-    const COLS = 3;
-    const x = (index % COLS) * GRID_SPACING;
-    const y = Math.floor(index / COLS) * 250;
+    // Find position from schema or fallback to grid layout
+    let x, y;
+    const schemaNode = schema?.nodes?.find(node =>
+      node.data.mock_model_id === model.id ||
+      node.id === `model-${model.id}`
+    );
+
+    if (schemaNode && schemaNode.position) {
+      x = schemaNode.position.x;
+      y = schemaNode.position.y;
+    } else {
+      // Fallback to grid layout if no schema position found
+      const GRID_SPACING = 350;
+      const COLS = 3;
+      x = (index % COLS) * GRID_SPACING;
+      y = Math.floor(index / COLS) * 250;
+    }
 
     return {
       id: erdModel.id,
@@ -212,7 +227,7 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
       position: { x, y },
       data: erdModel,
     };
-  }, []);
+  }, [schema]);
 
   // Initialize nodes from existing models
   useEffect(() => {
@@ -257,7 +272,7 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
         ],
       };
 
-      const newNode: Node = {
+      const newNode: ReactFlowNode = {
         id: newModel.id,
         type: "modelNode",
         position,
@@ -272,7 +287,15 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
   );
 
   useEffect(() => {
-    setData("model", { nodes, edges });
+    setData("model", {
+      nodes: nodes.map(node => ({
+        id: node.id,
+        type: node.type,
+        position: node.position,
+        data: node.data
+      })),
+      edges
+    });
   }, [nodes, edges]);
 
   // Function to submit data to backend
