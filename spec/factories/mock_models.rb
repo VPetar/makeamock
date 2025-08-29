@@ -8,19 +8,19 @@
 #  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  team_id      :bigint           not null
 #
 # Indexes
 #
-#  index_mock_models_on_user_id  (user_id)
+#  index_mock_models_on_team_id  (team_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (team_id => teams.id)
 #
 FactoryBot.define do
   factory :mock_model do
-    association :user
+    association :team
     name { Faker::Lorem.word.capitalize + "Model" }
     fields do
       {

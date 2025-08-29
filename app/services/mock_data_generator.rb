@@ -30,7 +30,7 @@ class MockDataGenerator
         next unless includes.include?(assoc["target"].downcase) || includes.include?(assoc["target"].downcase.pluralize)
 
         if assoc["type"] == "has_many"
-          related_model = @user.mock_models.find_by(name: assoc["target"])
+          related_model = @mock_model.team.mock_models.find_by(name: assoc["target"])
           if related_model
             related_generator = MockDataGenerator.new(related_model, @user)
             related_records   = related_generator.generate_records(count: 3)
@@ -40,7 +40,7 @@ class MockDataGenerator
         elsif assoc["type"] == "belongs_to"
           record[assoc["foreign_key"].to_sym] = Faker::Number.between(from: 1, to: 100)
           if includes.include?(assoc["target"].downcase)
-            related_model = @user.mock_models.find_by(name: assoc["target"])
+            related_model = @mock_model.team.mock_models.find_by(name: assoc["target"])
             if related_model
               related_generator                       = MockDataGenerator.new(related_model, @user)
               record[assoc["target"].downcase.to_sym] = related_generator.generate_single_record(id: record[assoc["foreign_key"].to_sym], includes: [])
@@ -49,14 +49,14 @@ class MockDataGenerator
         elsif assoc["type"] == "has_one"
           record[assoc["foreign_key"].to_sym] = Faker::Number.between(from: 1, to: 100)
           if includes.include?(assoc["target"].downcase)
-            related_model = @user.mock_models.find_by(name: assoc["target"])
+            related_model = @mock_model.team.mock_models.find_by(name: assoc["target"])
             if related_model
               related_generator                       = MockDataGenerator.new(related_model, @user)
               record[assoc["target"].downcase.to_sym] = related_generator.generate_single_record(id: record[assoc["foreign_key"].to_sym], includes: [])
             end
           end
         elsif assoc["type"] == "has_and_belongs_to_many"
-          related_model = @user.mock_models.find_by(name: assoc["target"])
+          related_model = @mock_model.team.mock_models.find_by(name: assoc["target"])
           if related_model
             related_generator                                 = MockDataGenerator.new(related_model, @user)
             record[assoc["target"].downcase.pluralize.to_sym] = related_generator.generate_records(count: 3)

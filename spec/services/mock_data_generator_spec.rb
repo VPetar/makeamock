@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe MockDataGenerator do
   let(:user) { create(:user) }
-  let(:mock_model) { create(:mock_model, user: user) }
+  let(:team) { create(:team) }
+  let(:mock_model) { create(:mock_model, team: team) }
   let(:generator) { described_class.new(mock_model, user) }
 
   describe '#initialize' do
@@ -63,10 +64,10 @@ RSpec.describe MockDataGenerator do
     end
 
     context 'with associations' do
-      let(:related_model) { create(:mock_model, :simple, user: user, name: 'RelatedModel') }
+      let(:related_model) { create(:mock_model, :simple, team: team, name: 'RelatedModel') }
       let(:mock_model_with_associations) do
         create(:mock_model,
-               user:         user,
+               team:         team,
                name:         'MainModel',
                fields:       { name: 'string', description: 'text' },
                associations: [
@@ -108,7 +109,7 @@ RSpec.describe MockDataGenerator do
   describe 'field value generation' do
     let(:mock_model_with_various_fields) do
       create(:mock_model,
-             user:         user,
+             team:         team,
              fields:       {
                name:   { type: 'string', required: true },
                bio:    { type: 'text', required: true },
@@ -150,14 +151,14 @@ RSpec.describe MockDataGenerator do
   end
 
   describe 'association handling' do
-    let(:user_model) { create(:mock_model, user: user, name: 'User', fields: { 'name' => 'string' }, associations: []) }
-    let(:post_model) { create(:mock_model, user: user, name: 'Post', fields: { 'title' => 'string' }, associations: []) }
-    let(:comment_model) { create(:mock_model, user: user, name: 'Comment', fields: { 'content' => 'text' }, associations: []) }
+    let(:user_model) { create(:mock_model, team: team, name: 'User', fields: { 'name' => 'string' }, associations: []) }
+    let(:post_model) { create(:mock_model, team: team, name: 'Post', fields: { 'title' => 'string' }, associations: []) }
+    let(:comment_model) { create(:mock_model, team: team, name: 'Comment', fields: { 'content' => 'text' }, associations: []) }
 
     context 'has_many associations' do
       let(:mock_model_with_has_many) do
         create(:mock_model,
-               user:         user,
+               team:         team,
                name:         'User',
                fields:       { 'name' => { type: 'string', reqiored: true } },
                associations: [
@@ -186,7 +187,7 @@ RSpec.describe MockDataGenerator do
     context 'belongs_to associations' do
       let(:mock_model_with_belongs_to) do
         create(:mock_model,
-               user:         user,
+               team:         team,
                name:         'Post',
                fields:       { 'title' => 'string' },
                associations: [
@@ -214,14 +215,14 @@ RSpec.describe MockDataGenerator do
     context 'has_one associations' do
       let(:mock_model_with_has_one) do
         create(:mock_model,
-               user:         user,
+               team:         team,
                name:         'User',
                fields:       { 'name' => 'string' },
                associations: [
                                { 'type' => 'has_one', 'target' => 'Profile', 'foreign_key' => 'profile_id' }
                              ])
       end
-      let(:profile_model) { create(:mock_model, user: user, name: 'Profile', fields: { 'bio' => 'text' }, associations: []) }
+      let(:profile_model) { create(:mock_model, team: team, name: 'Profile', fields: { 'bio' => 'text' }, associations: []) }
       let(:generator_has_one) { described_class.new(mock_model_with_has_one, user) }
 
       before { profile_model }
@@ -243,7 +244,7 @@ RSpec.describe MockDataGenerator do
     context 'when related model does not exist' do
       let(:mock_model_with_missing_relation) do
         create(:mock_model,
-               user:         user,
+               team:         team,
                name:         'TestModel',
                fields:       { 'name' => 'string' },
                associations: [

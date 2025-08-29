@@ -37,7 +37,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :trackable
 
-  has_many :mock_models, dependent: :destroy
   has_many :team_memberships, dependent: :destroy
   has_many :teams, -> { select("teams.*, team_memberships.role, team_memberships.active") },
          through: :team_memberships

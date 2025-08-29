@@ -2,7 +2,8 @@ class Api::DynamicController < AuthorizedController
   def index
     path         = params[:endpoint]
     query_params = request.query_parameters.except(:controller, :action, :endpoint).symbolize_keys
-    mock_model   = MockModel.find_by(name: path.camelize, user: current_user)
+    team         = current_user.teams.where(team_memberships: { active: true }).first
+    mock_model   = team&.mock_models&.find_by(name: path.camelize)
     data         = []
     if mock_model
       data = MockDataGenerator.new(mock_model, current_user).generate_records(count: query_params[:count].to_i || 1)
@@ -15,7 +16,8 @@ class Api::DynamicController < AuthorizedController
 
   def create
     path       = params[:endpoint]
-    mock_model = MockModel.find_by(name: path.camelize, user: current_user)
+    team       = current_user.teams.where(team_memberships: { active: true }).first
+    mock_model = team&.mock_models&.find_by(name: path.camelize)
     if mock_model
       data = mock_model.generate_from_data(params.permit!.to_h)
       render json: { path: "/#{path}", data: data }, status: :created
@@ -26,7 +28,8 @@ class Api::DynamicController < AuthorizedController
 
   def update
     path       = params[:endpoint]
-    mock_model = MockModel.find_by(name: path.camelize, user: current_user)
+    team       = current_user.teams.where(team_memberships: { active: true }).first
+    mock_model = team&.mock_models&.find_by(name: path.camelize)
     id         = params[:id] || 1
     if mock_model
       if request.patch?

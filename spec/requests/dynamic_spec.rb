@@ -5,7 +5,7 @@ RSpec.describe Api::DynamicController, type: :request do
 
   describe "GET /api/users?count=10" do
     before do
-      create(:mock_model, name: "Users", user: user, fields: {
+      create(:mock_model, name: "Users", team: user.teams.first, fields: {
         "name"  => { type: "string", required: true },
         "email" => { type: "string", required: true }
       })
@@ -23,7 +23,7 @@ RSpec.describe Api::DynamicController, type: :request do
 
   describe "POST /api/users" do
     before do
-      create(:mock_model, name: "Users", user: user, fields: {
+      create(:mock_model, name: "Users", team: user.teams.first, fields: {
         "name"  => { type: "string", required: true },
         "email" => { type: "string", required: true }
       })
@@ -47,7 +47,7 @@ RSpec.describe Api::DynamicController, type: :request do
 
   describe "PATCH /api/users/1" do
     before do
-      create(:mock_model, name: "Users", user: user, fields: {
+      create(:mock_model, name: "Users", team: user.teams.first, fields: {
         "name"  => { type: "string", required: true },
         "email" => { type: "string", required: true }
       })
@@ -70,7 +70,7 @@ RSpec.describe Api::DynamicController, type: :request do
 
   describe "PUT /api/users/69" do
     before do
-      create(:mock_model, name: "Users", user: user, fields: {
+      create(:mock_model, name: "Users", team: user.teams.first, fields: {
         "name"  => { type: "string", required: true },
         "email" => { type: "string", required: true }
       })
@@ -87,7 +87,7 @@ RSpec.describe Api::DynamicController, type: :request do
 
   describe "DELETE /api/users/1" do
     before do
-      create(:mock_model, name: "Users", user: user, fields: {
+      create(:mock_model, name: "Users", team: user.teams.first, fields: {
         "name"  => { type: "string", required: true },
         "email" => { type: "string", required: true }
       })
