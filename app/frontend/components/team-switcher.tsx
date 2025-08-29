@@ -40,7 +40,7 @@ export function TeamSwitcher() {
                 <span className="truncate font-semibold">
                   {activeTeam?.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam?.role}</span>
+                <span className="truncate text-xs capitalize">{activeTeam?.role}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
