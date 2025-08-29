@@ -2,7 +2,12 @@ class AuthorizedController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_user_has_team_or_redirect_to_onboarding
 
-  inertia_share user: -> { current_user }
+    inertia_share do
+    {
+      user_teams: -> { current_user&.teams || [] },
+      has_team: -> { current_user&.has_team? || false }
+    }
+  end
 
   private
 

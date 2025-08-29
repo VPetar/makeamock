@@ -39,11 +39,12 @@ class User < ApplicationRecord
 
   has_many :mock_models, dependent: :destroy
   has_many :team_memberships, dependent: :destroy
-  has_many :teams, through: :team_memberships
+  has_many :teams, -> { select("teams.*, team_memberships.role, team_memberships.active") },
+         through: :team_memberships
   has_many :sent_invitations, class_name: "Invitation", foreign_key: "invited_by_id", dependent: :destroy
 
   def self.ransackable_attributes(auth_object = nil)
-    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "locked_at", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
+    [ "confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "locked_at", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at" ]
   end
 
   def self.find_for_database_authentication(warden_conditions)

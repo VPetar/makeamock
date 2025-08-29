@@ -3,6 +3,7 @@
 # Table name: team_memberships
 #
 #  id         :bigint           not null, primary key
+#  active     :boolean          default(TRUE), not null
 #  role       :string           default("member"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

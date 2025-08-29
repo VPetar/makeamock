@@ -16,16 +16,14 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import { AlertCircleIcon, CheckCircle2Icon, InfoIcon, PopcornIcon } from "lucide-react";
 import { usePage } from "@inertiajs/react";
+import { SharedProps } from "@/props/authorizedSharedProps";
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const sharedProps = usePage<{
-    has_flash: boolean;
-    flash: Record<string, string>;
-  }>().props;
+  const sharedProps = usePage<SharedProps>().props;
 
   console.log('sharedProps', sharedProps);
 

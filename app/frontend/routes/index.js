@@ -1429,6 +1429,15 @@ export const root_path = /*#__PURE__*/ __jsr.r({}, [7,"/"]);
 
 /**
  * Generates rails route to
+ * /admin/invitations/:id/send_invite(.:format)
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const send_invite_admin_invitation_path = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"invitations"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"send_invite"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
  * /teams/:team_guid/teams/invitations/:id(.:format)
  * @param {any} team_guid
  * @param {any} id

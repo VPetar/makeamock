@@ -1240,6 +1240,18 @@ export const root_path: ((
 
 /**
  * Generates rails route to
+ * /admin/invitations/:id/send_invite(.:format)
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const send_invite_admin_invitation_path: ((
+  id: RequiredRouteParameter,
+  options?: {format?: OptionalRouteParameter} & RouteOptions
+) => string) & RouteHelperExtras;
+
+/**
+ * Generates rails route to
  * /teams/:team_guid/teams/invitations/:id(.:format)
  * @param {any} team_guid
  * @param {any} id
