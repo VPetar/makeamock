@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   ReactFlow,
   Controls,
@@ -15,9 +15,50 @@ import {
 import "@xyflow/react/dist/style.css";
 import ContextMenu from "@/components/erd/ContextMenu.tsx";
 import ModelNode from "@/components/erd/ModelNode.tsx";
+import { useForm } from "@inertiajs/react";
+import { dashboard_models_path } from "@/routes";
+import debounce from "debounce";
 
 interface DashboardModelsIndexProps {
   models: Model[];
+  schema: Schema;
+}
+
+export interface Schema {
+  edges: any[]
+  nodes: Node[]
+}
+
+export interface Node {
+  id: string
+  data: Data
+  type: string
+  measured: Measured
+  position: Position
+}
+
+export interface Data {
+  id: string
+  name: string
+  fields: MockField[]
+  mock_model_id: number
+}
+
+export interface MockField {
+  id: string
+  name: string
+  type: string
+  required: boolean
+}
+
+export interface Measured {
+  width: number
+  height: number
+}
+
+export interface Position {
+  x: number
+  y: number
 }
 
 interface Model {
@@ -46,6 +87,7 @@ interface Field {
 // Updated interfaces for ERD
 interface ERDField {
   id: string;
+  mock_model_id?: number;
   name: string;
   type: "string" | "text" | "integer" | "email" | "boolean";
   required: boolean;
@@ -66,10 +108,18 @@ interface ContextMenuState {
   y: number;
 }
 
-const nodeTypes: NodeTypes = { modelNode: ModelNode };
-
 export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
-  const { models } = props;
+  const { models, schema } = props;
+
+  console.log('schema', schema);
+
+  const {
+    post: submitForm,
+    processing,
+    setData,
+    data: modelFormData,
+  } = useForm({ model: { nodes: [], edges: [] } });
+
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
@@ -79,78 +129,97 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
   });
   const [nextModelId, setNextModelId] = useState(1);
 
-  // Convert Rails models to ERD format
-  const convertModelToERD = useCallback(
-    (model: Model, index: number): Node => {
-      // Convert Rails fields object to ERD fields array
-      const erdFields: ERDField[] = [];
-
-      // Add id field first (standard for all models)
-      erdFields.push({
-        id: `field-${model.id}-id`,
-        name: "id",
-        type: "integer",
-        required: true,
-      });
-
-      // Convert existing fields
-      Object.entries(model.fields).forEach(([fieldName, field]) => {
-        // Map Rails field types to ERD field types
-        let erdType: ERDField["type"] = "string";
-
-        switch (field.type.toLowerCase()) {
-          case "text":
-            erdType = "text";
-            break;
-          case "integer":
-          case "bigint":
-          case "decimal":
-            erdType = "integer";
-            break;
-          case "boolean":
-            erdType = "boolean";
-            break;
-          case "email":
-            erdType = "email";
-            break;
-          default:
-            erdType = "string";
-        }
-
-        erdFields.push({
-          id: `field-${model.id}-${fieldName}`,
-          name: fieldName,
-          type: erdType,
-          required: field.required,
-        });
-      });
-
-      const erdModel: ERDModel = {
-        id: `model-${model.id}`,
-        name: model.name,
-        fields: erdFields,
-      };
-
-      // Position models in a grid layout
-      const GRID_SPACING = 350;
-      const COLS = 3;
-      const x = (index % COLS) * GRID_SPACING;
-      const y = Math.floor(index / COLS) * 250;
-
-      return {
-        id: erdModel.id,
-        type: "modelNode",
-        position: { x, y },
-        data: erdModel,
-      };
+  // Callback to update model data from ModelNode components
+  const updateModelData = useCallback(
+    (modelId: string, updatedData: Partial<ERDModel>) => {
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === modelId
+            ? { ...node, data: { ...node.data, ...updatedData } }
+            : node
+        )
+      );
     },
-    [],
+    [setNodes],
   );
+
+  // Memoize nodeTypes to prevent React Flow from resetting on every render
+  const nodeTypes: NodeTypes = useMemo(() => ({
+    modelNode: (props: any) => <ModelNode {...props} onUpdateModel={updateModelData} />
+  }), [updateModelData]);
+
+  // Convert Rails models to ERD format
+  const convertModelToERD = useCallback((model: Model, index: number): Node => {
+    // Convert Rails fields object to ERD fields array
+    const erdFields: ERDField[] = [];
+
+    // Add id field first (standard for all models)
+    erdFields.push({
+      id: `mock-model-${model.id}-id`,
+      name: "id",
+      type: "integer",
+      required: true,
+    });
+
+    // Convert existing fields
+    Object.entries(model.fields).forEach(([fieldName, field]) => {
+      // Map Rails field types to ERD field types
+      let erdType: ERDField["type"] = "string";
+
+      switch (field.type.toLowerCase()) {
+        case "text":
+          erdType = "text";
+          break;
+        case "integer":
+        case "bigint":
+        case "decimal":
+          erdType = "integer";
+          break;
+        case "boolean":
+          erdType = "boolean";
+          break;
+        case "email":
+          erdType = "email";
+          break;
+        default:
+          erdType = "string";
+      }
+
+      erdFields.push({
+        id: `field-${model.id}-${fieldName}`,
+        name: fieldName,
+        type: erdType,
+        required: field.required,
+      });
+    });
+
+    const erdModel: ERDModel = {
+      id: `model-${model.id}`,
+      mock_model_id: model.id,
+      name: model.name,
+      fields: erdFields,
+    };
+
+    // Position models in a grid layout
+    const GRID_SPACING = 350;
+    const COLS = 3;
+    const x = (index % COLS) * GRID_SPACING;
+    const y = Math.floor(index / COLS) * 250;
+
+    return {
+      id: erdModel.id,
+      type: "modelNode",
+      position: { x, y },
+      data: erdModel,
+    };
+  }, []);
 
   // Initialize nodes from existing models
   useEffect(() => {
     if (models && models.length > 0) {
-      const initialNodes = models.map((model, index) => convertModelToERD(model, index));
+      const initialNodes = models.map((model, index) =>
+        convertModelToERD(model, index),
+      );
       setNodes(initialNodes);
 
       // Set next model ID to avoid conflicts
@@ -201,6 +270,30 @@ export default function DashboardModelsIndex(props: DashboardModelsIndexProps) {
     },
     [nextModelId, setNodes, closeContextMenu],
   );
+
+  useEffect(() => {
+    setData("model", { nodes, edges });
+  }, [nodes, edges]);
+
+  // Function to submit data to backend
+  useEffect(() => {
+    // debounced to avoid excessive calls
+    const debouncedSubmit = debounce(() => {
+      if (!processing) {
+        submitForm(dashboard_models_path(), {
+          preserveScroll: true,
+          preserveState: true,
+          only: ["models", "errors"],
+        });
+      }
+    }, 3000);
+
+    debouncedSubmit();
+
+    return () => {
+      debouncedSubmit.clear();
+    };
+  }, [modelFormData, nodes]);
 
   return (
     <div className="h-full w-full relative">

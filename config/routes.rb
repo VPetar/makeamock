@@ -55,7 +55,7 @@ Rails.application.routes.draw do
 
   namespace :dashboard do
     resources :home
-    resources :models
+    resources :models, only: [ :index, :create ]
   end
 
   get "*unmatched", to: "errors#not_found", constraints: lambda { |req|

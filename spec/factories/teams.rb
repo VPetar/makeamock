@@ -2,11 +2,12 @@
 #
 # Table name: teams
 #
-#  id         :bigint           not null, primary key
-#  guid       :string           not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id          :bigint           not null, primary key
+#  guid        :string           not null
+#  mock_schema :jsonb            not null
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 # Indexes
 #

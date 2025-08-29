@@ -8,6 +8,9 @@ if Rails.env.development?
     user.confirmed_at          = Time.now
   end
 
+  team = Team.find_or_create_by!(name: "Test Team")
+  TeamMembership.find_or_create_by!(team: team, user: user, role: "admin")
+
   # Create mock models for the user
   MockModel.create_with(
     fields:       {
@@ -19,12 +22,9 @@ if Rails.env.development?
     },
     associations: []
   ).find_or_create_by!(
-    user: user,
+    team: team,
     name: "Test Mock Model"
   )
-
-  team = Team.find_or_create_by!(name: "Test Team")
-  TeamMembership.find_or_create_by!(team: team, user: user, role: "admin")
 
 end
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?

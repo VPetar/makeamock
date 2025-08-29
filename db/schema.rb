@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_29_083431) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_094602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_083431) do
     t.string "guid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "mock_schema", default: {"edges" => [], "nodes" => []}, null: false
     t.index ["guid"], name: "index_teams_on_guid", unique: true
   end
 

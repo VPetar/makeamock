@@ -18,11 +18,12 @@ interface ERDModel {
 
 interface ModelNodeProps extends NodeProps {
   data: ERDModel;
+  onUpdateModel?: (modelId: string, updatedData: Partial<ERDModel>) => void;
 }
 
 const fieldTypes = ['string', 'text', 'integer', 'email', 'boolean'] as const;
 
-export default function ModelNode({ data }: ModelNodeProps) {
+export default function ModelNode({ data, id, onUpdateModel }: ModelNodeProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [modelName, setModelName] = useState(data.name);
   const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
@@ -34,8 +35,11 @@ export default function ModelNode({ data }: ModelNodeProps) {
 
   const handleNameSave = useCallback(() => {
     setIsEditingName(false);
-    // TODO: Update parent component with new model data
-  }, []);
+    // Update parent component with new model name
+    if (onUpdateModel && id) {
+      onUpdateModel(id, { name: modelName });
+    }
+  }, [modelName, onUpdateModel, id]);
 
   const addField = useCallback(() => {
     const newField: ERDField = {
@@ -44,25 +48,43 @@ export default function ModelNode({ data }: ModelNodeProps) {
       type: 'string',
       required: false,
     };
-    setFields(prev => [...prev, newField]);
+    const updatedFields = [...fields, newField];
+    setFields(updatedFields);
     setEditingFieldId(newField.id);
-  }, []);
+
+    // Update parent component with new fields
+    if (onUpdateModel && id) {
+      onUpdateModel(id, { fields: updatedFields });
+    }
+  }, [fields, onUpdateModel, id]);
 
   const removeField = useCallback((fieldId: string) => {
-    setFields(prev => prev.filter(field => {
+    const updatedFields = fields.filter(field => {
       // Don't allow removing the id field
       if (field.name === 'id') {
         return true; // Keep the field
       }
       return field.id !== fieldId; // Remove other fields normally
-    }));
-  }, []);
+    });
+    setFields(updatedFields);
+
+    // Update parent component with updated fields
+    if (onUpdateModel && id) {
+      onUpdateModel(id, { fields: updatedFields });
+    }
+  }, [fields, onUpdateModel, id]);
 
   const updateField = useCallback((fieldId: string, updates: Partial<ERDField>) => {
-    setFields(prev => prev.map(field =>
+    const updatedFields = fields.map(field =>
       field.id === fieldId ? { ...field, ...updates } : field
-    ));
-  }, []);
+    );
+    setFields(updatedFields);
+
+    // Update parent component with updated fields
+    if (onUpdateModel && id) {
+      onUpdateModel(id, { fields: updatedFields });
+    }
+  }, [fields, onUpdateModel, id]);
 
   const getFieldTypeColor = (type: string) => {
     const colors = {
@@ -111,6 +133,8 @@ export default function ModelNode({ data }: ModelNodeProps) {
             {editingFieldId === field.id ? (
               <div
                 className="flex-1 grid grid-cols-4 gap-2"
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
               >
                 <input
                   type="text"
@@ -118,11 +142,16 @@ export default function ModelNode({ data }: ModelNodeProps) {
                   onChange={(e) => updateField(field.id, { name: e.target.value })}
                   className="px-2 py-1 text-sm border border-gray-300 rounded"
                   onKeyDown={(e) => e.key === 'Enter' && setEditingFieldId(null)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                   autoFocus
                 />
                 <select
                   value={field.type}
                   onChange={(e) => updateField(field.id, { type: e.target.value as ERDField['type'] })}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
                   className="px-2 py-1 text-sm border border-gray-300 rounded"
                 >
                   {fieldTypes.map(type => (
@@ -131,17 +160,22 @@ export default function ModelNode({ data }: ModelNodeProps) {
                 </select>
                 <label
                   className="flex items-center gap-1 text-sm"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <input
                     type="checkbox"
                     checked={field.required}
                     onChange={(e) => updateField(field.id, { required: e.target.checked })}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                     className="rounded"
                   />
                   Required
                 </label>
                 <button
                   onClick={() => setEditingFieldId(null)}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className="px-2 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200"
                 >
                   Done
@@ -160,14 +194,22 @@ export default function ModelNode({ data }: ModelNodeProps) {
                 </div>
                 <div className="flex gap-1">
                   <button
-                    onClick={() => setEditingFieldId(field.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingFieldId(field.id);
+                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
                     className="text-gray-400 hover:text-gray-600"
                   >
                     <Edit2 size={14} />
                   </button>
                   {field.name !== 'id' && (
                     <button
-                      onClick={() => removeField(field.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeField(field.id);
+                      }}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className="text-red-400 hover:text-red-600"
                     >
                       <X size={14} />
