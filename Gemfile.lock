@@ -171,7 +171,7 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    inertia_rails (3.10.0)
+    inertia_rails (3.11.0)
       railties (>= 6)
     inherited_resources (2.1.0)
       actionpack (>= 7.0)
@@ -498,7 +498,7 @@ DEPENDENCIES
   draper
   factory_bot_rails
   faker
-  inertia_rails (~> 3.6)
+  inertia_rails (~> 3.11)
   jbuilder
   js-routes
   kamal
